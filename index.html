@@ -14,6 +14,7 @@
     color: white;
     text-align: center;
     overflow: hidden;
+    transition: background 6s;
   }
 
 
@@ -36,6 +37,7 @@
     100% { opacity: 0.3; }
   }
 
+  /* Scanlines */
   #scanlines {
     position: fixed;
     width: 100%;
@@ -84,27 +86,42 @@
   #finalText {
     display: none;
     margin-top: 100px;
+    font-size: 20px;
   }
 
+  /* GLITCH TEXT */
+  .glitch {
+    animation: glitch 0.1s infinite;
+  }
 
-  #eye {
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    50% { transform: translate(3px, -3px); }
+    100% { transform: translate(-3px, 3px); }
+  }
+
+  /* DARK OVERLAY */
+  #darkness {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 200px;
-    transform: translate(-50%, -50%) scale(0.5);
+    width: 100%;
+    height: 100%;
+    background: black;
     opacity: 0;
-    transition: opacity 3s ease, transform 3s ease;
+    transition: opacity 5s;
     pointer-events: none;
+    z-index: 6;
   }
 
-  #leave {
+  /* MESSAGE */
+  #message {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 60px;
+    font-size: 40px;
     display: none;
+    z-index: 7;
+    text-align: center;
   }
 
 </style>
@@ -115,6 +132,7 @@
 
 <div id="vhs">▶ PLAY</div>
 <div id="scanlines"></div>
+<div id="darkness"></div>
 
 <div id="startScreen" onclick="startSurvey()">
   Start Survey?
@@ -155,9 +173,7 @@
   You may now exit the tab.
 </div>
 
-<img id="eye" src="https://i.imgur.com/8QfQ5yC.png">
-
-<div id="leave">LEAVE THE TAB</div>
+<div id="message"></div>
 
 <script>
 
@@ -188,6 +204,8 @@ function endSurvey() {
 
   const glitchQ = document.getElementById("glitchQ");
 
+  glitchQ.classList.add("glitch");
+
   setTimeout(() => {
     glitchQ.innerHTML = "D0 Y0U H3AR TH3M WH3N Y0U AR3 AL0N3?";
   }, 500);
@@ -197,30 +215,47 @@ function endSurvey() {
     document.getElementById("finalText").style.display = "block";
   }, 2000);
 
-  setTimeout(startHorror, 6000);
+  setTimeout(startHorror, 5000);
 }
 
 function startHorror() {
 
-  document.title = "WE SEE YOU";
+  document.title = "DO NOT IGNORE";
 
-  const eye = document.getElementById("eye");
-  const leave = document.getElementById("leave");
+  const finalText = document.getElementById("finalText");
+  const darkness = document.getElementById("darkness");
+  const message = document.getElementById("message");
+
+  finalText.classList.add("glitch");
 
 
-  eye.style.opacity = 1;
-  eye.style.transform = "translate(-50%, -50%) scale(1)";
+  setTimeout(() => {
+    darkness.style.opacity = 0.9;
+  }, 1000);
 
 
-  leave.style.display = "block";
+  setTimeout(() => {
+    finalText.innerHTML = "…you didn't leave.";
+  }, 3000);
 
-  
-  document.addEventListener("mousemove", (e) => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 50;
-    const y = (e.clientY / window.innerHeight - 0.5) * 50;
+  setTimeout(() => {
+    finalText.innerHTML = "that was your first mistake.";
+  }, 6000);
 
-    eye.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(1)`;
-  });
+  setTimeout(() => {
+    finalText.innerHTML = "you answered every question.";
+  }, 9000);
+
+  setTimeout(() => {
+    finalText.innerHTML = "that means you are compatible.";
+  }, 12000);
+
+  setTimeout(() => {
+    finalText.style.display = "none";
+    message.style.display = "block";
+    message.innerHTML = "WELCOME TO H.A.P.S";
+    message.classList.add("glitch");
+  }, 15000);
 
 }
 
