@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>H.A.P.S Survey</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  body {
+    margin: 0;
+    font-family: monospace;
+    background: black;
+    color: white;
+    text-align: center;
+    overflow: hidden;
+    transition: background 5s;
+  }
+
+  #survey {
+    margin-top: 100px;
+  }
+
+  .question {
+    margin: 30px;
+  }
+
+  button {
+    padding: 10px 20px;
+    margin: 10px;
+    background: black;
+    border: 1px solid white;
+    color: white;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: white;
+    color: black;
+  }
+
+  #finalText {
+    display: none;
+    margin-top: 100px;
+    font-size: 20px;
+  }
+
+  
+  #eye {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-size: 120px;
+    opacity: 0;
+    transition: all 1.5s ease;
+    pointer-events: none;
+  }
+
+
+  .shake {
+    animation: shake 0.2s infinite;
+  }
+
+  @keyframes shake {
+    0% { transform: translate(0,0); }
+    25% { transform: translate(5px,-5px); }
+    50% { transform: translate(-5px,5px); }
+    75% { transform: translate(5px,5px); }
+    100% { transform: translate(-5px,-5px); }
+  }
+
+
+  .glitch {
+    animation: glitch 0.15s infinite;
+  }
+
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    50% { transform: translate(2px, -2px); }
+    100% { transform: translate(-2px, 2px); }
+  }
+
+  #leave {
+    position: fixed;
+    top: 40%;
+    width: 100%;
+    font-size: 50px;
+    display: none;
+  }
+
+</style>
+
+</head>
+
+<body>
+
+<div id="survey">
+
+  <div class="question">Are you willing to work in high-risk environments?<br>
+    <button onclick="next()">Yes</button>
+    <button onclick="next()">No</button>
+  </div>
+
+  <div class="question" style="display:none;">Can you remain calm under psychological pressure?<br>
+    <button onclick="next()">Yes</button>
+    <button onclick="next()">No</button>
+  </div>
+
+  <div class="question" style="display:none;">Will you follow instructions without hesitation?<br>
+    <button onclick="next()">Yes</button>
+    <button onclick="next()">No</button>
+  </div>
+
+  <div class="question" style="display:none;">Have you experienced unexplained phenomena before?<br>
+    <button onclick="next()">Yes</button>
+    <button onclick="next()">No</button>
+  </div>
+
+  <div class="question" style="display:none;" id="glitchQ">Do you hear them when you are alone?<br>
+    <button onclick="endSurvey()">Yes</button>
+    <button onclick="endSurvey()">No</button>
+  </div>
+
+</div>
+
+<div id="finalText">
+  Thanks for participating in this survey.<br>
+  You may now exit the tab.
+</div>
+
+<div id="eye">👁️</div>
+<div id="leave">LEAVE THE TAB</div>
+
+<script>
+
+let current = 0;
+const questions = document.querySelectorAll(".question");
+
+function next() {
+  questions[current].style.display = "none";
+  current++;
+  questions[current].style.display = "block";
+}
+
+function endSurvey() {
+  const glitchQ = document.getElementById("glitchQ");
+
+  glitchQ.classList.add("glitch");
+
+  setTimeout(() => {
+    glitchQ.innerHTML = "D0 Y0U H3AR TH3M WH3N Y0U AR3 AL0N3?";
+  }, 400);
+
+  setTimeout(() => {
+    glitchQ.style.display = "none";
+    document.getElementById("finalText").style.display = "block";
+  }, 2000);
+
+  setTimeout(startHorror, 5000);
+}
+
+function startHorror() {
+
+  document.title = "WE SEE YOU";
+
+  const eye = document.getElementById("eye");
+  const leave = document.getElementById("leave");
+
+  eye.style.opacity = 1;
+  eye.style.transform = "translate(-50%, -50%) scale(1)";
+
+  document.body.style.background = "darkred";
+
+  leave.style.display = "block";
+  leave.classList.add("glitch");
+
+  document.body.classList.add("shake");
+
+  // 👁️ TRACK MOUSE
+  document.addEventListener("mousemove", (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 40;
+    const y = (e.clientY / window.innerHeight - 0.5) * 40;
+
+    eye.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(1)`;
+  });
+
+}
+
+</script>
+
+</body>
+</html>
