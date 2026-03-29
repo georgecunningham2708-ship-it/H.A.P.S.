@@ -10,14 +10,56 @@
   body {
     margin: 0;
     font-family: monospace;
-    background: black;
+    background: #001a66;
     color: white;
     text-align: center;
     overflow: hidden;
-    transition: background 5s;
+  }
+
+
+  #vhs {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #001a66;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    z-index: 10;
+    animation: flicker 1s infinite;
+  }
+
+  @keyframes flicker {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+  }
+
+  #scanlines {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.05) 0px,
+      rgba(255,255,255,0.05) 1px,
+      transparent 2px,
+      transparent 4px
+    );
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  #startScreen {
+    display: none;
+    margin-top: 200px;
+    font-size: 30px;
+    cursor: pointer;
   }
 
   #survey {
+    display: none;
     margin-top: 100px;
   }
 
@@ -28,7 +70,7 @@
   button {
     padding: 10px 20px;
     margin: 10px;
-    background: black;
+    background: transparent;
     border: 1px solid white;
     color: white;
     cursor: pointer;
@@ -42,50 +84,26 @@
   #finalText {
     display: none;
     margin-top: 100px;
-    font-size: 20px;
   }
 
-  
+
   #eye {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    font-size: 120px;
+    width: 200px;
+    transform: translate(-50%, -50%) scale(0.5);
     opacity: 0;
-    transition: all 1.5s ease;
+    transition: opacity 3s ease, transform 3s ease;
     pointer-events: none;
-  }
-
-
-  .shake {
-    animation: shake 0.2s infinite;
-  }
-
-  @keyframes shake {
-    0% { transform: translate(0,0); }
-    25% { transform: translate(5px,-5px); }
-    50% { transform: translate(-5px,5px); }
-    75% { transform: translate(5px,5px); }
-    100% { transform: translate(-5px,-5px); }
-  }
-
-
-  .glitch {
-    animation: glitch 0.15s infinite;
-  }
-
-  @keyframes glitch {
-    0% { transform: translate(0); }
-    50% { transform: translate(2px, -2px); }
-    100% { transform: translate(-2px, 2px); }
   }
 
   #leave {
     position: fixed;
-    top: 40%;
-    width: 100%;
-    font-size: 50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 60px;
     display: none;
   }
 
@@ -94,6 +112,13 @@
 </head>
 
 <body>
+
+<div id="vhs">▶ PLAY</div>
+<div id="scanlines"></div>
+
+<div id="startScreen" onclick="startSurvey()">
+  Start Survey?
+</div>
 
 <div id="survey">
 
@@ -112,12 +137,13 @@
     <button onclick="next()">No</button>
   </div>
 
-  <div class="question" style="display:none;">Have you experienced unexplained phenomena before?<br>
+  <div class="question" style="display:none;">Have you experienced anomalies before?<br>
     <button onclick="next()">Yes</button>
     <button onclick="next()">No</button>
   </div>
 
-  <div class="question" style="display:none;" id="glitchQ">Do you hear them when you are alone?<br>
+  <div class="question" style="display:none;" id="glitchQ">
+    Do you hear them when you are alone?<br>
     <button onclick="endSurvey()">Yes</button>
     <button onclick="endSurvey()">No</button>
   </div>
@@ -129,10 +155,25 @@
   You may now exit the tab.
 </div>
 
-<div id="eye">👁️</div>
+<img id="eye" src="https://i.imgur.com/8QfQ5yC.png">
+
 <div id="leave">LEAVE THE TAB</div>
 
 <script>
+
+const vhs = document.getElementById("vhs");
+const startScreen = document.getElementById("startScreen");
+const survey = document.getElementById("survey");
+
+setTimeout(() => {
+  vhs.style.display = "none";
+  startScreen.style.display = "block";
+}, 3000);
+
+function startSurvey() {
+  startScreen.style.display = "none";
+  survey.style.display = "block";
+}
 
 let current = 0;
 const questions = document.querySelectorAll(".question");
@@ -144,20 +185,19 @@ function next() {
 }
 
 function endSurvey() {
-  const glitchQ = document.getElementById("glitchQ");
 
-  glitchQ.classList.add("glitch");
+  const glitchQ = document.getElementById("glitchQ");
 
   setTimeout(() => {
     glitchQ.innerHTML = "D0 Y0U H3AR TH3M WH3N Y0U AR3 AL0N3?";
-  }, 400);
+  }, 500);
 
   setTimeout(() => {
     glitchQ.style.display = "none";
     document.getElementById("finalText").style.display = "block";
   }, 2000);
 
-  setTimeout(startHorror, 5000);
+  setTimeout(startHorror, 6000);
 }
 
 function startHorror() {
@@ -167,20 +207,17 @@ function startHorror() {
   const eye = document.getElementById("eye");
   const leave = document.getElementById("leave");
 
+
   eye.style.opacity = 1;
   eye.style.transform = "translate(-50%, -50%) scale(1)";
 
-  document.body.style.background = "darkred";
 
   leave.style.display = "block";
-  leave.classList.add("glitch");
 
-  document.body.classList.add("shake");
-
-  // 👁️ TRACK MOUSE
+  
   document.addEventListener("mousemove", (e) => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 40;
-    const y = (e.clientY / window.innerHeight - 0.5) * 40;
+    const x = (e.clientX / window.innerWidth - 0.5) * 50;
+    const y = (e.clientY / window.innerHeight - 0.5) * 50;
 
     eye.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(1)`;
   });
